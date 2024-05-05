@@ -1,6 +1,45 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void shuffle_teams(char** teams, int teams_length) {
+    srand(time(NULL));
+    
+    for(int i = 0; i < teams_length; i++) {
+        int j = rand() % teams_length;
+        char* temp = teams[i];
+        teams[i] = teams[j];
+        teams[j] = temp;
+    }
+}
 
 void generate_schedule(char** teams, int teams_length) {
+    shuffle_teams(teams, teams_length);
+
+    int teams_scheduled[teams_length];
+
+    for(int i = 0; i < teams_length; i++) {
+        teams_scheduled[i] = 0;
+    }
+
+    srand(time(NULL));
+
+    for(int i = 0; i < teams_length; i++) {
+        int j = rand() % teams_length;
+
+        if(teams_scheduled[i]) {
+            continue;
+        }
+
+        while(i == j || teams_scheduled[j]) {
+            j = rand() % teams_length;
+        }
+
+        printf("%s vs. %s\n", teams[i], teams[j]);
+
+        teams_scheduled[i] = 1;
+        teams_scheduled[j] = 1;
+    }
 }
 
 int main() {
@@ -36,7 +75,9 @@ int main() {
         "Chicago White Sox",
         "New York Yankees",
     };
-    
+
     int teams_length = sizeof(teams) / sizeof(teams[0]);
+    generate_schedule(teams, teams_length);
+
     return 0;
 }
