@@ -3,8 +3,6 @@
 #include <time.h>
 
 void shuffle_teams(char** teams, int teams_length) {
-    srand(time(NULL));
-    
     for(int i = 0; i < teams_length; i++) {
         int j = rand() % teams_length;
         char* temp = teams[i];
@@ -14,31 +12,37 @@ void shuffle_teams(char** teams, int teams_length) {
 }
 
 void generate_schedule(char** teams, int teams_length) {
-    shuffle_teams(teams, teams_length);
+    for(int game = 1; game <= 162; game++) {
+        printf("Game %d:\n", game);
+        shuffle_teams(teams, teams_length);
+        int teams_scheduled[teams_length];
 
-    int teams_scheduled[teams_length];
-
-    for(int i = 0; i < teams_length; i++) {
-        teams_scheduled[i] = 0;
-    }
-
-    srand(time(NULL));
-
-    for(int i = 0; i < teams_length; i++) {
-        int j = rand() % teams_length;
-
-        if(teams_scheduled[i]) {
-            continue;
+        for(int i = 0; i < teams_length; i++) {
+            teams_scheduled[i] = 0;
         }
 
-        while(i == j || teams_scheduled[j]) {
-            j = rand() % teams_length;
+        for(int i = 0; i < teams_length; i++) {
+            int j = rand() % teams_length;
+
+            if(teams_scheduled[i]) {
+                continue;
+            }
+
+            while(i == j || teams_scheduled[j]) {
+                j = rand() % teams_length;
+            }
+
+            int winner_index = rand() % 2;
+
+            if(winner_index == 0) {
+                printf("%s(W) vs. %s(L)\n", teams[i], teams[j]);
+            } else {
+                printf("%s(L) vs. %s(W)\n", teams[i], teams[j]);
+            }
+
+            teams_scheduled[i] = 1;
+            teams_scheduled[j] = 1;
         }
-
-        printf("%s vs. %s\n", teams[i], teams[j]);
-
-        teams_scheduled[i] = 1;
-        teams_scheduled[j] = 1;
     }
 }
 
@@ -76,6 +80,7 @@ int main() {
         "New York Yankees",
     };
 
+    srand(time(NULL));
     int teams_length = sizeof(teams) / sizeof(teams[0]);
     generate_schedule(teams, teams_length);
 
