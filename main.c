@@ -12,6 +12,14 @@ void shuffle_teams(char** teams, int teams_length) {
 }
 
 void generate_schedule(char** teams, int teams_length) {
+    int teams_wins[teams_length];
+    int teams_losses[teams_length];
+
+    for(int i = 0; i < teams_length; i++) {
+        teams_wins[i] = 0;
+        teams_losses[i] = 0;
+    }
+
     for(int game = 1; game <= 162; game++) {
         printf("Game %d:\n", game);
         shuffle_teams(teams, teams_length);
@@ -36,13 +44,24 @@ void generate_schedule(char** teams, int teams_length) {
 
             if(winner_index == 0) {
                 printf("%s(W) vs. %s(L)\n", teams[i], teams[j]);
+                teams_wins[i]++;
+                teams_losses[j]++;
             } else {
                 printf("%s(L) vs. %s(W)\n", teams[i], teams[j]);
+                teams_wins[j]++;
+                teams_losses[i]++;
             }
 
             teams_scheduled[i] = 1;
             teams_scheduled[j] = 1;
         }
+    }
+
+    printf("\n");
+    printf("Standings:\n");
+
+    for(int i = 0; i < teams_length; i++) {
+        printf("%s: %d - %d\n", teams[i], teams_wins[i], teams_losses[i]);
     }
 }
 
